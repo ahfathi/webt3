@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}twitter{% endblock %}</title>
+</head>
+<body>
+    <div class='header'>
+        <strong style='color:blue'><a style='text-decoration: none; color: inherit;' href="{% url 'twitter:index' %}">Twitter</a></strong> &nbsp;&nbsp;
+        {% if user.is_authenticated %}
+            Salam <strong><a href="{% url 'users:profile' %}">{{ user.nickname }}</a></strong> - 
+            <a href="{% url 'users:logout' %}">Logout</a>
+        {% else %}
+            <a href="{% url 'users:register' %}">Register</a> - 
+            <a href="{% url 'users:login' %}">Login</a>
+        {% endif %}
+    </div>
+    {% block content %}{% endblock %}
+</body>
+</html>

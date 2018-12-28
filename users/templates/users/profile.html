@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ user.nickname }} profile{% endblock %}
+
+{% block content %}
+	<h1>Personal information</h1>
+	<img width="50px" src="{{ user.avatar.url }}" />
+	<form method='POST' enctype='multipart/form-data' style='margin-bottom: 50px'>
+		{% csrf_token %}
+		{{ form.as_p }}
+		<input type='submit' value='edit' />
+		<input type='hidden' name='next' value="{% url 'users:profile' %}" />
+	</form>
+	<a href="{% url 'twitter:new_post' %}">New Post</a>
+	<ul>
+		{% for post in posts %}
+			<li>
+				<strong>{{ post.title }}</strong> - <span style='opacity: 0.5'>{{ post.date_created }}</span>
+				<div style='margin-left: 10px'>{{ post.text | linebreaks }} </div>
+			</li>
+		{% empty %}
+			<p>You have not posted anything yet</p>
+		{% endfor %}
+	</ul>
+{% endblock %}

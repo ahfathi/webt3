@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<h1>Latest posts</h1>
+	<ul>
+		{% for post in posts %}
+			<li>
+				<strong>{{ post.title }}</strong> - <span style='opacity: 0.5'>by {{ post.author }} - {{ post.date_created }}</span>
+				<div style='margin-left: 10px'>{{ post.text | linebreaks }}</div>
+			</li>
+		{% empty %}
+			<p>There are no posts to show</p>
+		{% endfor %}
+	</ul>
+{% endblock %}

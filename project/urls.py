@@ -23,6 +23,7 @@ urlpatterns = [
     path('users/', include('users.urls', namespace='users')),
     path('', include('twitter.urls', namespace='twitter')),
     path('api/', include('api.urls', namespace='api')),
+    path('social/', include('social_django.urls', namespace='social')),
 ]
 urlpatterns += staticfiles_urlpatterns()
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

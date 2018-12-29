@@ -8,4 +8,7 @@
         <input type='submit' value='login' />
         <input type='hidden' name='next' value="{% url 'twitter:index' %}" />
     </form>
+    <p>
+        <a href="{% url 'social:begin' 'google-oauth2' %}">Login with Google</a>
+    </p>
 {% endblock %}

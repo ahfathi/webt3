@@ -5,7 +5,7 @@
 	<ul style='list-style-type: none;'>
 		{% for post in posts %}
 			<li>
-				<div style='display: flex; align-items: center;'><img width='25px' src='{{post.author.avatar.url}}' />&nbsp;<strong>{{ post.title }}</strong>&nbsp;-&nbsp;<span style='opacity: 0.5'>by {{ post.author }} - {{ post.date_created }}</span></div>
+				<div style='display: flex; align-items: center;'><img width='25px' src='{{post.author.avatar.url}}' />&nbsp;<strong>{{ post.title }}</strong>&nbsp;-&nbsp;<span style='opacity: 0.5; font-size:80%;'>by {{ post.author }} - {{ post.date_created }}</span></div>
 				<div style='margin-left: 10px'>{{ post.text | linebreaks }}</div>
 			</li>
 		{% empty %}

@@ -17,7 +17,7 @@
 	<ul>
 		{% for post in posts %}
 			<li>
-				<strong>{{ post.title }}</strong> - <span style='opacity: 0.5'>{{ post.date_created }}</span>
+				<strong>{{ post.title }}</strong> - <span style='opacity: 0.5; font-size:80%;'>{{ post.date_created }}</span>
 				<div style='margin-left: 10px'>{{ post.text | linebreaks }} </div>
 			</li>
 		{% empty %}

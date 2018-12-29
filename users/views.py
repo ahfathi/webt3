@@ -7,7 +7,6 @@ from .forms import UserChangeForm, UserCreationForm
 from .models import User
 
 from api.utils import create_token
-from api.models import AccessKey
 
 # Create your views here.
 
@@ -16,8 +15,6 @@ def register(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            access_key = AccessKey(token=create_token(user), user=user)
-            access_key.save()
             login(request, user)
             return HttpResponseRedirect(request.POST['next'])
         else:

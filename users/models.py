@@ -5,8 +5,8 @@ from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
     email = models.EmailField(max_length=254, unique=True)
-    nickname = models.CharField(max_length=20)
+    nickname = models.CharField(max_length=20, default='guest')
     avatar = models.ImageField(upload_to='avatars', default='avatars/info.png')
 
     def __str__(self):
-        return self.username
+        return self.nickname

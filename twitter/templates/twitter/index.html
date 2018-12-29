@@ -2,10 +2,10 @@
 
 {% block content %}
 	<h1>Latest posts</h1>
-	<ul>
+	<ul style='list-style-type: none;'>
 		{% for post in posts %}
 			<li>
-				<strong>{{ post.title }}</strong> - <span style='opacity: 0.5'>by {{ post.author }} - {{ post.date_created }}</span>
+				<div style='display: flex; align-items: center;'><img width='25px' src='{{post.author.avatar.url}}' />&nbsp;<strong>{{ post.title }}</strong>&nbsp;-&nbsp;<span style='opacity: 0.5'>by {{ post.author }} - {{ post.date_created }}</span></div>
 				<div style='margin-left: 10px'>{{ post.text | linebreaks }}</div>
 			</li>
 		{% empty %}

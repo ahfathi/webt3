@@ -9,6 +9,7 @@
 	<form method='POST' enctype='multipart/form-data' style='margin-bottom: 50px'>
 		{% csrf_token %}
 		{{ form.as_p }}
+		<a href="{% url 'users:keygen' %}">Generate access key</a>
 		<input type='submit' value='edit' />
 		<input type='hidden' name='next' value="{% url 'users:profile' %}" />
 	</form>

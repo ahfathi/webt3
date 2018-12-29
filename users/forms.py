@@ -25,15 +25,16 @@ class UserCreationForm(forms.ModelForm):
 			user.save()
 		return user
 
-
 class UserChangeForm(forms.ModelForm):
+	access_key = forms.CharField(max_length=64, widget=forms.TextInput(attrs={'disabled': True, 'size': 90}))
 	class Meta:
 		model = User
-		fields = ('username', 'nickname', 'email', 'avatar')
+		fields = ('username', 'nickname', 'email', 'avatar', 'access_key')
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
+		self.fields['access_key'].initial = self.instance.accesskey.token
 		for field in self.Meta.fields:
 			self.fields[field].required = False
 

@@ -6,6 +6,7 @@ from django.contrib.auth.models import AnonymousUser
 from security.models import RequestData, BannedIP
 from users.models import User
 from project import settings
+from time import time
 
 class SecurityMiddleware:
     def __init__(self, get_response):
@@ -20,7 +21,10 @@ class SecurityMiddleware:
 
         banned_ip = BannedIP.objects.filter(ip=request_ip)
         if banned_ip.exists():
-            return HttpResponseForbidden(banned_ip.log)
+            if time() - banned_ip[0].time_banned > settings.BANNED_IP_EXPIRE_TIME:
+                banned_ip.delete()
+            else:
+                return HttpResponseForbidden('%s %s' % (banned_ip[0].log, 'please wait {} seconds.'.format(settings.BANNED_IP_EXPIRE_TIME-int(time()-banned_ip[0].time_banned))))
 
 
         user_agent = request.META['HTTP_USER_AGENT']
@@ -29,7 +33,7 @@ class SecurityMiddleware:
         if user == AnonymousUser():
             user = None
         
-        request_data = RequestData(ip=request_ip, user_agent=user_agent, user=user, session_key=session_key)
+        request_data = RequestData(ip=request_ip, user_agent=user_agent, user=user, session_key=session_key, time=time())
         request_data.save()
 
         if user and user.is_authenticated:
@@ -42,13 +46,14 @@ class SecurityMiddleware:
         H = settings.REQUEST_LIMIT_TIME
         request_queryset = RequestData.objects.filter(ip=request_ip).order_by('time')
         requests = list(request_queryset)
+        delete_early_requests = False
         if len(requests) >= N:
             time_spread = requests[-1].time - requests[0].time
             if (time_spread < H):
-                BannedIP.objects.create(ip=request_ip, log='sent {} requests in {} time spread.'.format(N, H))
+                BannedIP.objects.create(ip=request_ip, time_banned=time(), log='sent {} requests in {} seconds.'.format(len(requests), time_spread))
                 request_queryset.delete()
-            for i in range(0, len(requests)-N+1):
-                request_queryset[i].delete()
+            else:
+                delete_early_requests = True
 
         response = self.get_response(request)
 
@@ -60,11 +65,16 @@ class SecurityMiddleware:
         requests = list(request_queryset)
         for i in range(len(requests)):
             n = 0
-            while not requests[i].authorized:
+            while i < len(requests) and not requests[i].authorized:
                 n += 1
                 i += 1
-            if n == N:
-                BannedIP.objects.create(ip=request_ip, log='sent {} consecutive unauthorized requests.')
+            if n >= N:
+                BannedIP.objects.create(ip=request_ip, time_banned=time(), log='sent {} consecutive unauthorized requests.'.format(n))
                 request_queryset.delete()
+                delete_early_requests = False
+
+        if delete_early_requests:
+            for i in range(0, len(requests)-N+1):
+                    request_queryset[0].delete()
         
         return response

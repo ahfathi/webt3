@@ -1,13 +1,12 @@
 from django.db import models
 from users.models import User
-from time import time
 
 # Create your models here.
 
 class RequestData(models.Model):
     ip = models.GenericIPAddressField(db_index=True)
     user_agent = models.CharField(max_length=256)
-    time = models.IntegerField(default=time())
+    time = models.IntegerField()
     user = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True, null=True)
     session_key = models.CharField(max_length=32, null=True)
     authorized = models.BooleanField(default=True)
@@ -17,4 +16,5 @@ class RequestData(models.Model):
 
 class BannedIP(models.Model):
     ip = models.GenericIPAddressField()
+    time_banned = models.IntegerField()
     log = models.TextField()

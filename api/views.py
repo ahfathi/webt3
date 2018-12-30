@@ -1,5 +1,5 @@
 from django.views import View
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseForbidden
 from users.models import User
 from api.models import AccessKey
 from twitter.models import Post
@@ -20,7 +20,7 @@ class Login(View):
         password = json_request.get('password')
         user = get_object_or_404(User, username=username)
         if not user.check_password(password):
-            return JsonResponse({'error': 'wrong password!'})
+            return HttpResponseForbidden('error: wrong password!')
         token = create_token(user)
         user.accesskey.token = token
         user.accesskey.save()
